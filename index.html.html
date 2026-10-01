@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ilusões Óticas - Feira de Ciências</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --accent: #10b981;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #4f46e5, #3b82f6);
+            color: white;
+            padding: 2.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 0.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+
+        nav button {
+            background: transparent;
+            border: none;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        nav button:hover {
+            color: var(--primary);
+            background-color: #f1f5f9;
+        }
+
+        nav button.active {
+            color: white;
+            background-color: var(--primary);
+        }
+
+        main {
+            max-width: 950px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            flex: 1;
+            width: 100%;
+        }
+
+        .page {
+            display: none;
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: var(--text-main);
+            font-size: 1.3rem;
+            margin: 1.5rem 0 0.5rem 0;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            text-align: justify;
+        }
+
+        .project-image {
+            width: 100%;
+            max-width: 450px;
+            height: auto;
+            display: block;
+            margin: 1.5rem auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 3px solid var(--border-color);
+        }
+
+        /* Disco de Newton Aprimorado */
+        .newton-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 2rem;
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .disc-wrapper {
+            position: relative;
+            width: 260px;
+            height: 260px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #newtonDisc {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            border: 6px solid #1e293b;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+            transition: transform 0.05s linear;
+            background: conic-gradient(
+                #ff3b30 0deg 51.4deg,
+                #ff9500 51.4deg 102.8deg,
+                #ffcc00 102.8deg 154.2deg,
+                #34c759 154.2deg 205.6deg,
+                #5ac8fa 205.6deg 257deg,
+                #007aff 257deg 308.4deg,
+                #af52de 308.4deg 360deg
+            );
+        }
+
+        #newtonDisc.spinning::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            right: 5px;
+            bottom: 5px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.78);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        #newtonDisc.spinning.blur-white::after {
+            opacity: 1;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        button.action-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        button.action-btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .speed-control input {
+            cursor: pointer;
+        }
+
+        /* Menu da Galeria Real de Ilusões */
+        .gallery-menu {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            justify-content: center;
+        }
+
+        .gallery-btn {
+            background: #e2e8f0;
+            border: none;
+            padding: 0.6rem 1.1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .gallery-btn:hover, .gallery-btn.active-gallery {
+            background: var(--primary);
+            color: white;
+        }
+
+        .illusion-view-box {
+            background: #f8fafc;
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .illusion-content-item {
+            display: none;
+            width: 100%;
+        }
+
+        .illusion-content-item.active-ill {
+            display: block;
+        }
+
+        /* 1. Grade de Hermann */
+        .hermann-grid {
+            width: 200px;
+            height: 200px;
+            background-color: black;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 8px;
+            padding: 8px;
+            margin: 1rem auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .hermann-cell {
+            background-color: white;
+        }
+
+        /* 2. Pós-Imagem Negativa */
+        .afterimage-box {
+            width: 240px;
+            height: 240px;
+            margin: 1rem auto;
+            background: #0f172a;
+            border: 4px solid #1e293b;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+            overflow: hidden;
+        }
+        .negative-art {
+            width: 140px;
+            height: 140px;
+            border: 4px dashed #38bdf8;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(circle, #0284c7 0%, #0369a1 70%);
+        }
+        .negative-eyes {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 15px;
+        }
+        .neg-eye {
+            width: 22px;
+            height: 22px;
+            background: #facc15;
+            border-radius: 50%;
+        }
+        .neg-mouth {
+            width: 50px;
+            height: 14px;
+            border-bottom: 5px solid #facc15;
+            border-radius: 0 0 25px 25px;
+        }
+        .center-dot {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #ffffff;
+            z-index: 10;
+            animation: pulseDot 1.5s infinite alternate;
+        }
+        @keyframes pulseDot {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            100% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* 3. Efeito de Troxler */
+        .troxler-box {
+            width: 220px;
+            height: 150px;
+            margin: 1rem auto;
+            background: #e2e8f0;
+            border-radius: 10px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .troxler-blur-circle {
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.45) 0%, rgba(59, 130, 246, 0.45) 50%, rgba(16, 185, 129, 0.45) 100%);
+            border-radius: 50%;
+            filter: blur(8px);
+            animation: pulseTroxler 3s infinite alternate ease-in-out;
+        }
+        .troxler-cross {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #0f172a;
+            z-index: 2;
+            user-select: none;
+        }
+        @keyframes pulseTroxler {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            100% { transform: scale(1.08); opacity: 1; }
+        }
+
+        /* ESTILOS DA PÁGINA DE ESTATÍSTICAS REFINADA */
+        .stats-dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .stat-card h4 {
+            color: var(--text-main);
+            font-size: 1.15rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .vote-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .vote-btn-yes {
+            flex: 1;
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            font-weight: bold;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+        }
+
+        .vote-btn-yes:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        .vote-btn-no {
+            flex: 1;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            font-weight: bold;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+        }
+
+        .vote-btn-no:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* Gráfico de Barras Moderno */
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            background: #ffffff;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-row {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            gap: 0.8rem;
+        }
+
+        .chart-bar-wrapper {
+            flex: 1;
+            background: #e2e8f0;
+            height: 18px;
+            border-radius: 9px;
+            overflow: hidden;
+            display: flex;
+        }
+
+        .chart-bar-fill {
+            height: 100%;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 9px;
+        }
+
+        .fill-yes { background-color: var(--danger); }
+        .fill-no { background-color: var(--accent); }
+
+        .chart-label {
+            min-width: 95px;
+            text-align: right;
+        }
+
+        .stats-footer-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border-color);
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .total-visitors {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.15rem;
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: #ffffff;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 2rem; }
+            .page { padding: 1.5rem; }
+            .vote-actions { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Ilusões Óticas</h1>
+        <p>Projeto de Feira de Ciências - Explorando os Mistérios da Visão e do Cérebro</p>
+    </header>
+
+    <nav>
+        <button class="tab-btn active" onclick="switchPage(0)">1. Introdução</button>
+        <button class="tab-btn" onclick="switchPage(1)">2. Dinossauro</button>
+        <button class="tab-btn" onclick="switchPage(2)">3. Fidget Toy</button>
+        <button class="tab-btn" onclick="switchPage(3)">4. Disco de Newton</button>
+        <button class="tab-btn" onclick="switchPage(4)">5. Galeria de Ilusões</button>
+        <button class="tab-btn" onclick="switchPage(5)">6. Estatísticas</button>
+    </nav>
+
+    <main>
+        <!-- Página 1: Introdução -->
+        <div class="page active">
+            <h2>O que são Ilusões Óticas?</h2>
+            <p>As ilusões óticas são imagens ou fenómenos que enganam o nosso sistema visual, fazendo com que enxerguemos algo que não está realmente lá ou percebamos de forma distorcida a realidade. Elas acontecem por causa da forma como os nossos olhos captam a luz e como o nosso cérebro processa essas informações.</p>
+            
+            <h3>A História e a Origem</h3>
+            <p>O estudo das ilusões visuais acompanha a humanidade há séculos. Filósofos antigos como Aristóteles já notavam que os sentidos podiam ser enganados. Com o passar do tempo, cientistas, psicólogos e artistas passaram a usar essas falhas de perceção para entender a neurologia humana e criar artes impressionantes.</p>
+
+            <h3>Como Funciona no Cérebro?</h3>
+            <p>Os nossos olhos funcionam como lentes que capturam fotões de luz e enviam impulsos elétricos para o cérebro através do nervo ótico. Para economizar energia, o cérebro utiliza "atalhos mentais" baseados em experiências passadas, sombras, profundidade e perspetiva. Quando uma imagem brinca com esses atalhos, o cérebro confunde-se, gerando a ilusão ótica.</p>
+        </div>
+
+        <!-- Página 2: Dinossauro de Perspetiva -->
+        <div class="page">
+            <h2>Dinossauro de Perspetiva</h2>
+            <img src="image_bf79fc.png" alt="Dinossauro de Perspetiva" class="project-image">
+            <p>O dinossauro de perspetiva (conhecido como o "Dragão Mágico") é um clássico modelo em papel recortado e montado em formato tridimensional côncavo. Quando montado corretamente, ele parece fixar os olhos em quem o observa e acompanhar o movimento da pessoa de qualquer ângulo da sala.</p>
+            
+            <h3>Como funciona essa ilusão?</h3>
+            <p>A ilusão ocorre devido a uma falha na nossa perceção de profundidade. O focinho do dinossauro foi desenhado e dobrado para ser <b>côncavo</b> (voltado para dentro), mas o nosso cérebro está acostumado a ver objetos <b>convexos</b> (pontiagudos para fora). Ao forçar a imagem a parecer convexa, a geometria inversa faz com que pareça que a cabeça inteira está a girar e a segui-lo.</p>
+        </div>
+
+        <!-- Página 3: Fidget Toy Espiral -->
+        <div class="page">
+            <h2>Fidget Toy Espiral</h2>
+            <img src="image_bf79fe.png" alt="Fidget Toy Espiral" class="project-image">
+            <p>O Fidget Toy Espiral é um objeto fascinante que chama a atenção pelo design geométrico em camadas escalonadas ao redor de um eixo central, criando um efeito visual impressionante quando está estático ou em rotação.</p>
+            
+            <h3>Como funciona essa ilusão?</h3>
+            <p>Este objeto explora o conceito de <b>geometria sagrada e repetição de padrões visuais</b>. Cada camada é subtilmente deslocada em relação à anterior, criando profundidade tridimensional. Ao girar, as cores e as sombras das ranhuras fundem-se em padrões dinâmicos e hipnóticos que estimulam a atenção e o foco.</p>
+        </div>
+
+        <!-- Página 4: Disco de Newton -->
+        <div class="page">
+            <h2>Disco de Newton</h2>
+            <p>O Disco de Newton é um dispositivo clássico criado pelo físico Sir Isaac Newton para demonstrar que a luz branca do Sol é a composição de todas as cores do arco-íris unidas.</p>
+            
+            <div class="newton-container">
+                <div class="disc-wrapper">
+                    <div id="newtonDisc"></div>
+                </div>
+                
+                <div class="controls">
+                    <button class="action-btn" id="spinBtn" onclick="toggleSpin()">Girar o Disco</button>
+                    <div class="speed-control">
+                        <label for="speedRange">Velocidade:</label>
+                        <input type="range" id="speedRange" min="1" max="10" value="8" oninput="updateSpeed()">
+                    </div>
+                </div>
+            </div>
+
+            <h3>Como funciona o Disco de Newton?</h3>
+            <p style="margin-top: 1.5rem;">As cores estão pintadas em setores proporcionais no disco. Quando parado, vemos cada cor separadamente. Ao girar em alta velocidade, ocorre o fenómeno da <b>Persistência Retiniana</b>: a retina humana retém a imagem de cada cor por uma fração de segundo. Como o disco gira rápido demais, o cérebro funde todas as cores, fazendo com que o disco pareça branco!</p>
+        </div>
+
+        <!-- Página 5: Galeria de Ilusões Reais -->
+        <div class="page">
+            <h2>Galeria de Ilusões Óticas Reais</h2>
+            <p>Teste os visitantes da sua feira com estas três ilusões clássicas e poderosas que pegam todo a gente:</p>
+            
+            <div class="gallery-menu">
+                <button class="gallery-btn active-gallery" onclick="showIllusion(0)">1. Pontos Fantasmas</button>
+                <button class="gallery-btn" onclick="showIllusion(1)">2. Pós-Imagem na Parede</button>
+                <button class="gallery-btn" onclick="showIllusion(2)">3. Efeito de Troxler (Desaparecimento)</button>
+            </div>
+
+            <div class="illusion-view-box">
+                <!-- Ilusão 1: Grade de Hermann -->
+                <div class="illusion-content-item active-ill" id="ill-0">
+                    <div class="hermann-grid">
+                        <div class="hermann-cell"></div><div class="hermann-cell"></div><div class="hermann-cell"></div><div class="hermann-cell"></div>
+                        <div class="hermann-cell"></div><div class="hermann-cell"></div><div class="hermann-cell"></div><div class="hermann-cell"></div>
+                        <div class="hermann-cell"></div><div class="hermann-cell"></div><div class="hermann-cell"></div><div class="hermann-cell"></div>
+                        <div class="hermann-cell"></div><div class="hermann-cell"></div><div class="hermann-cell"></div><div class="hermann-cell"></div>
+                    </div>
+                    <h3>Os Pontos Fantasmas que Piscam</h3>
+                    <p><b>O que acontece:</b> Olhe fixamente para o centro da grade e tente contar os pontos cinzentos que aparecem e somem rapidamente nos cruzamentos brancos. <b>Por que engana:</b> As células da nossa visão periférica respondem fortemente ao contraste entre o preto e o branco, criando pontos fantasma que não estão realmente desenhados lá.</p>
+                </div>
+
+                <!-- Ilusão 2: Pós-Imagem Negativa -->
+                <div class="illusion-content-item" id="ill-1">
+                    <div class="afterimage-box">
+                        <div class="center-dot"></div>
+                        <div class="negative-art">
+                            <div class="negative-eyes">
+                                <div class="neg-eye"></div>
+                                <div class="neg-eye"></div>
+                            </div>
+                            <div class="neg-mouth"></div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin: 1rem 0;">
+                        <button class="action-btn" id="startTimerBtn" onclick="startAfterimageTimer()">Iniciar Cronómetro (25s)</button>
+                        <p id="timerDisplay" style="font-weight: bold; color: var(--primary); margin-top: 0.5rem; font-size: 1.2rem;">Clique para iniciar o teste</p>
+                    </div>
+
+                    <h3>A Magia da Pós-Imagem na Parede!</h3>
+                    <p><b>O que fazer:</b> Olhe fixamente para o <b>ponto branco central</b> sem desviar os olhos até o cronómetro terminar. Depois, olhe rapidamente para uma parede branca ou teto claro e **pisque várias vezes**. <b>Por que engana:</b> Os recetores de cor da retina (cones) cansam-se com as cores invertidas. Quando olhas para a parede clara, o cérebro projeta a imagem nas cores reais e normais!</p>
+                </div>
+
+                <!-- Ilusão 3: Efeito de Troxler -->
+                <div class="illusion-content-item" id="ill-2">
+                    <div class="troxler-box">
+                        <div class="troxler-blur-circle"></div>
+                        <div class="troxler-cross">+</div>
+                    </div>
+                    <h3>O Desaparecimento das Cores</h3>
+                    <p><b>O que acontece:</b> Olhe fixamente sem piscar para a cruz <b>(+)</b> no centro durante 15 a 20 segundos. As cores ao redor vão começar a desvanecer-se e a desaparecer por completo! <b>Por que engana:</b> Os neurónios recetores da retina adaptam-se a estímulos estáticos constantes e param de enviar sinais ao cérebro, fazendo as cores sumirem.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Página 6: Estatísticas e Votação -->
+        <div class="page">
+            <h2>Painel de Estatísticas da Feira</h2>
+            <p>Registe a reação de cada visitante que testar as ilusões. Os dados ficam salvos permanentemente no dispositivo:</p>
+            
+            <div class="stats-dashboard">
+                <!-- Ilusão 1 -->
+                <div class="stat-card">
+                    <h4>1. Pontos Fantasmas (Grade de Hermann)</h4>
+                    <div class="vote-actions">
+                        <button class="vote-btn-yes" onclick="vote(1, 'yes')">Caí direitinho! 🤩 (<span id="s1-yes">0</span>)</button>
+                        <button class="vote-btn-no" onclick="vote(1, 'no')">Fiquei imune! 😎 (<span id="s1-no">0</span>)</button>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-row">
+                            <span class="chart-label">Caíram (<span id="p1-yes">0%</span>)</span>
+                            <div class="chart-bar-wrapper">
+                                <div class="chart-bar-fill fill-yes" id="bar1-yes" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="chart-row">
+                            <span class="chart-label">Imunes (<span id="p1-no">0%</span>)</span>
+                            <div class="chart-bar-wrapper">
+                                <div class="chart-bar-fill fill-no" id="bar1-no" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ilusão 2 -->
+                <div class="stat-card">
+                    <h4>2. Pós-Imagem (Cores na Parede)</h4>
+                    <div class="vote-actions">
+                        <button class="vote-btn-yes" onclick="vote(2, 'yes')">Vi a imagem! 😲 (<span id="s2-yes">0</span>)</button>
+                        <button class="vote-btn-no" onclick="vote(2, 'no')">Não vi nada 😶 (<span id="s2-no">0</span>)</button>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-row">
+                            <span class="chart-label">Viram (<span id="p2-yes">0%</span>)</span>
+                            <div class="chart-bar-wrapper">
+                                <div class="chart-bar-fill fill-yes" id="bar2-yes" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="chart-row">
+                            <span class="chart-label">Não viram (<span id="p2-no">0%</span>)</span>
+                            <div class="chart-bar-wrapper">
+                                <div class="chart-bar-fill fill-no" id="bar2-no" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ilusão 3 -->
+                <div class="stat-card">
+                    <h4>3. Efeito de Troxler (Desaparecimento de Cores)</h4>
+                    <div class="vote-actions">
+                        <button class="vote-btn-yes" onclick="vote(3, 'yes')">Cores sumiram! 🧙‍♂️ (<span id="s3-yes">0</span>)</button>
+                        <button class="vote-btn-no" onclick="vote(3, 'no')">Nada sumiu 🛡️ (<span id="s3-no">0</span>)</button>
+                    </div>
+                    <div class="chart-container">
+                        <div class="chart-row">
+                            <span class="chart-label">Sumiram (<span id="p3-yes">0%</span>)</span>
+                            <div class="chart-bar-wrapper">
+                                <div class="chart-bar-fill fill-yes" id="bar3-yes" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="chart-row">
+                            <span class="chart-label">Não sumiram (<span id="p3-no">0%</span>)</span>
+                            <div class="chart-bar-wrapper">
+                                <div class="chart-bar-fill fill-no" id="bar3-no" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-footer-box">
+                <span class="total-visitors">🏆 Total Acumulado de Participantes: <span id="totalVotesCount">0</span></span>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Feira de Ciências • Projeto de Ilusões Óticas e Física Visual</p>
+    </footer>
+
+    <script>
+        function switchPage(index) {
+            const pages = document.querySelectorAll('.page');
+            const buttons = document.querySelectorAll('nav button');
+
+            pages.forEach((page, i) => {
+                page.classList.remove('active');
+                buttons[i].classList.remove('active');
+            });
+
+            pages[index].classList.add('active');
+            buttons[index].classList.add('active');
+        }
+
+        function showIllusion(index) {
+            const items = document.querySelectorAll('.illusion-content-item');
+            const gBtns = document.querySelectorAll('.gallery-btn');
+
+            items.forEach((item, i) => {
+                item.classList.remove('active-ill');
+                gBtns[i].classList.remove('active-gallery');
+            });
+
+            items[index].classList.add('active-ill');
+            gBtns[index].classList.add('active-gallery');
+        }
+
+        // Cronómetro interativo para a Pós-Imagem (Ilusão 2)
+        let timerInterval = null;
+        function startAfterimageTimer() {
+            const display = document.getElementById('timerDisplay');
+            const btn = document.getElementById('startTimerBtn');
+            
+            if (timerInterval) clearInterval(timerInterval);
+            
+            let timeLeft = 25;
+            btn.disabled = true;
+            btn.style.opacity = "0.6";
+            display.textContent = `Mantenha os olhos no ponto branco: ${timeLeft}s`;
+
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft > 0) {
+                    display.textContent = `Mantenha os olhos no ponto branco: ${timeLeft}s`;
+                } else {
+                    clearInterval(timerInterval);
+                    display.textContent = "⏰ Acabou! Olhe agora para a parede branca e pisco rápido!";
+                    btn.disabled = false;
+                    btn.style.opacity = "1";
+                }
+            }, 1000);
+        }
+
+        // Lógica do Disco de Newton
+        const disc = document.getElementById('newtonDisc');
+        const spinBtn = document.getElementById('spinBtn');
+        const speedRange = document.getElementById('speedRange');
+        
+        let isSpinning = false;
+        let currentSpeed = 3;
+
+        function toggleSpin() {
+            isSpinning = !isSpinning;
+            if (isSpinning) {
+                spinBtn.textContent = "Parar o Disco";
+                spinBtn.style.backgroundColor = "#dc2626";
+                applySpin();
+            } else {
+                spinBtn.textContent = "Girar o Disco";
+                spinBtn.style.backgroundColor = "#4f46e5";
+                disc.style.animation = 'none';
+                disc.classList.remove('spinning', 'blur-white');
+            }
+        }
+
+        function updateSpeed() {
+            let val = speedRange.value;
+            currentSpeed = (11 - val) * 0.05; 
+            if (isSpinning) {
+                applySpin();
+            }
+        }
+
+        function applySpin() {
+            disc.style.animation = `spinAnim ${currentSpeed}s linear infinite`;
+            disc.classList.add('spinning');
+            if (currentSpeed <= 0.25) {
+                disc.classList.add('blur-white');
+            } else {
+                disc.classList.remove('blur-white');
+            }
+        }
+
+        const styleSheet = document.styleSheets[0];
+        styleSheet.insertRule(`
+            @keyframes spinAnim {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+        `, styleSheet.cssRules.length);
+
+        // Sistema de Estatísticas Permanente (localStorage sem botão de apagar)
+        let stats = JSON.parse(localStorage.getItem('feira_ill_stats_v7')) || {
+            1: { yes: 0, no: 0 },
+            2: { yes: 0, no: 0 },
+            3: { yes: 0, no: 0 }
+        };
+
+        function updateStatsUI() {
+            let totalGeneral = 0;
+
+            for (let id in stats) {
+                const yes = stats[id].yes;
+                const no = stats[id].no;
+                const total = yes + no;
+                totalGeneral += total;
+
+                // Atualizar contadores numéricos
+                const yElem = document.getElementById(`s${id}-yes`);
+                const nElem = document.getElementById(`s${id}-no`);
+                if (yElem && nElem) {
+                    yElem.textContent = yes;
+                    nElem.textContent = no;
+                }
+
+                // Calcular percentagens
+                let pYes = 0;
+                let pNo = 0;
+                if (total > 0) {
+                    pYes = Math.round((yes / total) * 100);
+                    pNo = 100 - pYes;
+                }
+
+                document.getElementById(`p${id}-yes`).textContent = `${pYes}%`;
+                document.getElementById(`p${id}-no`).textContent = `${pNo}%`;
+
+                // Atualizar largura das barras do gráfico
+                document.getElementById(`bar${id}-yes`).style.width = `${pYes}%`;
+                document.getElementById(`bar${id}-no`).style.width = `${pNo}%`;
+            }
+
+            document.getElementById('totalVotesCount').textContent = totalGeneral;
+        }
+
+        function vote(id, type) {
+            stats[id][type]++;
+            localStorage.setItem('feira_ill_stats_v7', JSON.stringify(stats));
+            updateStatsUI();
+            
+            // Feedback visual subtil no botão clicado
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = "✔ Registado com sucesso!";
+            setTimeout(() => { btn.innerHTML = originalText; }, 900);
+        }
+
+        updateStatsUI();
+    </script>
+</body>
+</html>
